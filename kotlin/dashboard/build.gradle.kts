@@ -82,8 +82,3 @@ task<Copy>("prepare") {
     from(jar.outputs.files.singleFile)
     into("build")
 }
-docker {
-    copySpec()
-        .from(tasks.getByName<Copy>("prepare").outputs)
-        .into("build")
-}

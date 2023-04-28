@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <script>
-        fetch('/ingresses/urls')
+        fetch('http://localhost:8080/ingresses/urls')
             .then((resp) => resp.json())
             .then((data) => {
                 return data.map(url => {
                     let href = document.createElement("a")
                     href.href = `https://${url}`
                     let li = document.createElement("li")
-                    href.appendChild(document.createTextNode(url))
+                    let text = url.split(".")[0]
+                    href.appendChild(document.createTextNode(text))
                     li.appendChild(href)
                     return li
                 })
@@ -23,9 +24,26 @@
                 })
             })
     </script>
+    <style>
+        #urls {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: center;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: center;
+        }
+        #urls > li {
+            text-transform: capitalize;
+            flex: 1 1 0px;
+            padding: 20px;
+            list-style: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Dashboard</h1>
-    <ul id="urls"></ul>
+    <div id="urls"></div>
 </body>
 </html>
