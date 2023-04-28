@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script>
+        fetch('/ingresses/urls')
+            .then((resp) => resp.json())
+            .then((data) => {
+                return data.map(url => {
+                    let href = document.createElement("a")
+                    href.href = `https://${url}`
+                    let li = document.createElement("li")
+                    href.appendChild(document.createTextNode(url))
+                    li.appendChild(href)
+                    return li
+                })
+            })
+            .then((urls) => {
+                let urlsElem = document.getElementById("urls")
+                urls.forEach(url => {
+                    urlsElem.appendChild(url)
+                })
+            })
+    </script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <ul id="urls"></ul>
+</body>
+</html>

@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: dev.dayoung
+testFramework: junit
+sourceLanguage: kotlin
+buildTool: gradle_kotlin
+features: [annotation-api, app-name, discovery-kubernetes, gradle, http-client, jackson-databind, junit, kotlin, kotlin-application, kotlin-build, kotlin-extension-functions, kubernetes-client, kubernetes-informer, logback, management, micronaut-build, netty-server, readme, shade, spring, spring-boot, spring-web, yaml]
