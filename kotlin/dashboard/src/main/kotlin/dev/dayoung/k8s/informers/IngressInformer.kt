@@ -5,7 +5,7 @@ import io.kubernetes.client.openapi.models.V1Ingress
 import io.kubernetes.client.openapi.models.V1IngressList
 import io.micronaut.kubernetes.client.informer.Informer
 
-@Informer(apiType = V1Ingress::class, apiListType = V1IngressList::class)
+@Informer(apiType = V1Ingress::class, apiListType = V1IngressList::class, namespace = Informer.ALL_NAMESPACES)
 class IngressInformer : ResourceEventHandler<V1Ingress> {
     override fun onAdd(obj: V1Ingress?) { }
 

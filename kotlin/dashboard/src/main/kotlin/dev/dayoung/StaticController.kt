@@ -11,6 +11,6 @@ class StaticController {
     @Get("/")
     @Produces(MediaType.TEXT_HTML)
     fun serveStatic(): String {
-        return StaticController::class.java.getResource("/html/index.html").readText()
+        return StaticController::class.java.getResource("/html/index.html")?.readText() ?: ""
     }
 }

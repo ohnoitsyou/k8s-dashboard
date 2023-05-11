@@ -8,17 +8,12 @@ import io.micronaut.http.MediaType
 
 @Controller("/ingresses")
 class IngressController(private val serviceInformer: InformerCache) {
-
-    @Get("/")
-    fun allEndpoints() =
-        serviceInformer.getIngresses()
-
-    @Get("/urls")
+    @Get
     @Produces(MediaType.APPLICATION_JSON)
     fun allEndpointURL(): List<String?> =
         serviceInformer.getIngresses().filter { ing ->
-            val hasLabel = ing.metadata?.labels?.contains("dev.dayoung.dashboard/include") ?: false
-            val hasValue = ing.metadata?.labels?.getOrDefault("dev.dayoung.dashboard/include", "false") == "true"
+            val hasLabel = ing.metadata?.annotations?.contains("dev.dayoung.dashboard/include") ?: false
+            val hasValue = ing.metadata?.annotations?.getOrDefault("dev.dayoung.dashboard/include", "false") == "true"
             hasLabel && hasValue
         }.flatMap { ing ->
             ing.spec?.rules?.map { rule -> rule.host } ?: listOf()

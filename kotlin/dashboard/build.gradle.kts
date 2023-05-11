@@ -1,13 +1,17 @@
+import com.google.cloud.tools.jib.api.buildplan.ImageFormat
+import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.6.21"
     id("org.jetbrains.kotlin.kapt") version "1.6.21"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.6.21"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.micronaut.application") version "3.6.2"
+    id("io.micronaut.application") version "3.7.2"
+    id("com.google.cloud.tools.jib") version "3.3.1"
+
 }
 
-version = "0.1"
+version = "1.1"
 group = "dev.dayoung"
 
 val kotlinVersion=project.properties.get("kotlinVersion")
@@ -17,29 +21,15 @@ repositories {
 
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
-    kapt("io.micronaut.spring:micronaut-spring-annotation")
-    kapt("io.micronaut.spring:micronaut-spring-boot-annotation")
-    kapt("io.micronaut.spring:micronaut-spring-web-annotation")
     implementation("io.micronaut:micronaut-http-client")
-    implementation("io.micronaut:micronaut-http-server")
     implementation("io.micronaut:micronaut-jackson-databind")
-    implementation("io.micronaut:micronaut-management")
-    implementation("io.micronaut.kotlin:micronaut-kotlin-extension-functions")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.kubernetes:micronaut-kubernetes-client")
-    //implementation("io.micronaut.kubernetes:micronaut-kubernetes-discovery-client")
     implementation("io.micronaut.kubernetes:micronaut-kubernetes-informer")
     implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-web")
     runtimeOnly("ch.qos.logback:logback-classic")
-    runtimeOnly("io.micronaut.spring:micronaut-spring-boot")
-    runtimeOnly("io.micronaut.spring:micronaut-spring-web")
-    kaptTest("io.micronaut.spring:micronaut-spring-annotation")
-    kaptTest("io.micronaut.spring:micronaut-spring-boot-annotation")
-    kaptTest("io.micronaut.spring:micronaut-spring-web-annotation")
     implementation("io.micronaut:micronaut-validation")
 
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -81,4 +71,19 @@ task<Copy>("prepare") {
     dependsOn(jar)
     from(jar.outputs.files.singleFile)
     into("build")
+}
+
+jib {
+    if(Os.isFamily(Os.FAMILY_MAC)) {
+        dockerClient.executable = "/opt/homebrew/bin/podman"
+    }
+    from.image = "gcr.io/distroless/java17-debian11:nonroot"
+    to {
+        image = "ghcr.io/ohnoitsyou/k8s-dashboard"
+        tags = setOf("latest", "$version")
+    }
+    container {
+        format = ImageFormat.OCI
+        ports= listOf("8080")
+    }
 }
